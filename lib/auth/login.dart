@@ -18,10 +18,11 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-            onPressed: () {
-              signInWithGoogle();
-            },
-            child: Text("Google")),
+          onPressed: () {
+            signInWithGoogle();
+          },
+          child: Text("Google"),
+        ),
       ),
     );
   }

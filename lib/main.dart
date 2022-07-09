@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+var userData;
+var userId;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -28,6 +30,9 @@ class MyApp extends StatelessWidget {
             if (snapshot.data == null) {
               return LoginPage();
             } else {
+              userData = snapshot.data;
+              userId = userData.uid;
+              print("uid : $userId");
               return HomeScreen();
             }
           }
