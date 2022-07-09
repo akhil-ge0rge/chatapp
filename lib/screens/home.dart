@@ -52,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                            return ChatPage();
+                            return ChatPage(
+                                rid: snapshot.data!.docs[index]['userid'],
+                                uid: userId);
                           }));
                         },
                         child: Card(
