@@ -1,3 +1,5 @@
+import 'package:chatapp/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -32,29 +34,36 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SizedBox(
         height: scrHeight,
         width: scrWidth,
-        child: ListView.builder(
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return ChatPage();
-                    },
-                  ));
-                },
-                child: Card(
-                  margin: EdgeInsets.all(10),
-                  child: Container(
-                    height: 70,
-                    child: Row(
-                      children: [
-                        Text("Name"),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+        child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("user")
+                .where("userid", isNotEqualTo: userId)
+                .snapshots(),
+            builder: (context, snapshot) {
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return ChatPage();
+                          },
+                        ));
+                      },
+                      child: Card(
+                        margin: EdgeInsets.all(10),
+                        child: Container(
+                          height: 70,
+                          child: Row(
+                            children: [
+                              Text(snapshot.data!.docs[index]['username']),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  });
             }),
       ),
     );
