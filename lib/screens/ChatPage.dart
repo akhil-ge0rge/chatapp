@@ -99,30 +99,114 @@ class _ChatPageState extends State<ChatPage> {
                                   data[index]["receiverId"] == widget.uid) &&
                               (data[index]["senderId"] == widget.rid ||
                                   data[index]["receiverId"] == widget.rid)) {
-                            return Container(
-                              padding: const EdgeInsets.only(
-                                  left: 14, right: 14, top: 10, bottom: 10),
-                              child: Align(
-                                alignment:
-                                    (data[index]["senderId"] == widget.rid
-                                        ? Alignment.topLeft
-                                        : Alignment.topRight),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color:
-                                        (data[index]["senderId"] == widget.rid
-                                            ? Colors.grey[200]
-                                            : Colors.pink[50]),
-                                  ),
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text(
-                                    data[index]["message"],
-                                    style: TextStyle(fontSize: 15),
+                            return Align(
+                              alignment: (data[index]["senderId"] == widget.rid
+                                  ? Alignment.topLeft
+                                  : Alignment.topRight),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxWidth: scrWidth - 45, minWidth: 110),
+                                child: Card(
+                                  elevation: 1,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  color: Color(0xffdcf8c6),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 5),
+                                  child: Stack(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 10,
+                                          right: 30,
+                                          top: 5,
+                                          bottom: 20,
+                                        ),
+                                        child: Text(
+                                          data[index]["message"],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 4,
+                                        right: 10,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "2:30",
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Icon(
+                                              Icons.done_all,
+                                              size: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             );
+                            // Container(
+                            //   padding: const EdgeInsets.only(
+                            //       left: 14, right: 14, top: 10, bottom: 10),
+                            //   child: Align(
+                            //     alignment:
+                            //         (data[index]["senderId"] == widget.rid
+                            //             ? Alignment.topLeft
+                            //             : Alignment.topRight),
+                            //     child:
+                            // Container(
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(20),
+                            //     color:
+                            //         (data[index]["senderId"] == widget.rid
+                            //             ? Colors.grey[200]
+                            //             : Colors.pink[50]),
+                            //   ),
+                            //   padding: const EdgeInsets.all(16),
+                            //   child: Column(
+                            //     crossAxisAlignment:
+                            //         data[index]["senderId"] == widget.rid
+                            //             ? CrossAxisAlignment.start
+                            //             : CrossAxisAlignment.end,
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Text(
+                            //         data[index]["message"],
+                            //         style: TextStyle(fontSize: 15),
+                            //       ),
+                            //       SizedBox(
+                            //         width: 40,
+                            //         child: Row(
+                            //           mainAxisAlignment: data[index]
+                            //                       ["senderId"] ==
+                            //                   widget.rid
+                            //               ? MainAxisAlignment.start
+                            //               : MainAxisAlignment.end,
+                            //           children: [
+                            //             SizedBox(),
+                            //             Text(
+                            //               "2:30",
+                            //               style: TextStyle(fontSize: 12),
+                            //             )
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            //   ),
+                            // );
                           }
                           return SizedBox();
                         },
