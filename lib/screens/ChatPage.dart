@@ -8,7 +8,15 @@ import 'package:flutter/src/widgets/framework.dart';
 class ChatPage extends StatefulWidget {
   String uid;
   String rid;
-  ChatPage({Key? key, required this.rid, required this.uid}) : super(key: key);
+  String name;
+  String image;
+  ChatPage(
+      {Key? key,
+      required this.rid,
+      required this.uid,
+      required this.name,
+      required this.image})
+      : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -22,11 +30,58 @@ class _ChatPageState extends State<ChatPage> {
     double scrHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          leadingWidth: 90,
+
+          backgroundColor: Colors.grey[200],
+          elevation: 0,
+          leading: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              GestureDetector(
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(.4),
+                      spreadRadius: .2,
+                      blurRadius: 8,
+                      offset: Offset(0, 1), // Shadow position
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                width: 45,
+                height: 45,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.network(
+                    widget.image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // centerTitle: true,
+          title: Text(
+            widget.name,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ),
         body: SizedBox(
           height: scrHeight,
           width: scrWidth,
           child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection("chat").snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection("chat")
+                  .orderBy("sendTime", descending: true)
+                  .snapshots(),
               builder: (context, snapshot) {
                 var data = snapshot.data!.docs;
                 return Column(
@@ -34,6 +89,7 @@ class _ChatPageState extends State<ChatPage> {
                   children: [
                     Expanded(
                       child: ListView.builder(
+                        reverse: true,
                         itemCount: data.length,
                         shrinkWrap: true,
                         padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -56,13 +112,13 @@ class _ChatPageState extends State<ChatPage> {
                                     borderRadius: BorderRadius.circular(20),
                                     color:
                                         (data[index]["senderId"] == widget.rid
-                                            ? Colors.grey.shade200
-                                            : Colors.blue[200]),
+                                            ? Colors.grey[200]
+                                            : Colors.pink[50]),
                                   ),
                                   padding: const EdgeInsets.all(16),
                                   child: Text(
                                     data[index]["message"],
-                                    style: const TextStyle(fontSize: 15),
+                                    style: TextStyle(fontSize: 15),
                                   ),
                                 ),
                               ),
@@ -72,53 +128,58 @@ class _ChatPageState extends State<ChatPage> {
                         },
                       ),
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          width: scrWidth / 1.25,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
-                          margin: EdgeInsets.only(left: 4, bottom: 4),
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Icon(Icons.face),
-                              Flexible(
-                                child: TextFormField(
-                                  onTap: () {},
-                                  controller: messageController,
-                                  decoration: const InputDecoration(
-                                      border: InputBorder.none),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(bottom: 8.0, left: 5, right: 5),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: scrWidth / 1.25,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                            margin: EdgeInsets.only(left: 4, bottom: 4),
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                  width: 10,
                                 ),
-                              ),
-                            ],
+                                Icon(Icons.face),
+                                Flexible(
+                                  child: TextFormField(
+                                    controller: messageController,
+                                    decoration: const InputDecoration(
+                                        border: InputBorder.none),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: scrWidth / 50,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(40)),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: scrWidth / 300,
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    sendMessage();
-                                    messageController.clear();
-                                  },
-                                  icon: const Icon(Icons.send_sharp)),
-                            ],
+                          SizedBox(
+                            width: scrWidth / 50,
                           ),
-                        ),
-                      ],
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(40)),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: scrWidth / 300,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      if (messageController.text.isNotEmpty) {
+                                        sendMessage();
+                                        messageController.clear();
+                                      }
+                                    },
+                                    icon: const Icon(Icons.send_sharp)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 );

@@ -19,18 +19,25 @@ class _HomeScreenState extends State<HomeScreen> {
     double scrWidth = MediaQuery.of(context).size.width;
     double scrHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text("Chat"),
+        backgroundColor: Colors.grey[200],
+        title: Text(
+          "WhatsApp",
+          style: TextStyle(color: Colors.grey[600]),
+        ),
         actions: [
           GestureDetector(
               onTap: () async {
                 await GoogleSignIn().signOut();
                 FirebaseAuth.instance.signOut();
               },
-              child: Icon(Icons.logout)),
+              child: Icon(Icons.logout, color: Colors.grey[600])),
+          SizedBox(
+            width: 10,
+          )
         ],
       ),
-      backgroundColor: Color(0xff435a64),
       body: SizedBox(
         height: scrHeight,
         width: scrWidth,
@@ -53,12 +60,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return ChatPage(
-                                rid: snapshot.data!.docs[index]['userid'],
-                                uid: userId);
+                              name: snapshot.data!.docs[index]['username'],
+                              rid: snapshot.data!.docs[index]['userid'],
+                              uid: userId,
+                              image: snapshot.data!.docs[index]['userimage'],
+                            );
                           }));
                         },
                         child: Card(
-                          margin: const EdgeInsets.all(10),
+                          color: Colors.grey[300],
+                          elevation: .5,
                           child: Container(
                             padding: const EdgeInsets.only(left: 10),
                             height: 70,
