@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   String uid;
@@ -30,10 +31,11 @@ class _ChatPageState extends State<ChatPage> {
     double scrHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Color(0xff08151a),
         appBar: AppBar(
           leadingWidth: 90,
 
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Color(0xff1e2c35),
           elevation: 0,
           leading: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -41,7 +43,7 @@ class _ChatPageState extends State<ChatPage> {
               GestureDetector(
                 child: Icon(
                   Icons.arrow_back_ios_new,
-                  color: Colors.grey[600],
+                  color: Color(0xfff8f8f8),
                 ),
               ),
               Container(
@@ -71,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
           // centerTitle: true,
           title: Text(
             widget.name,
-            style: TextStyle(color: Colors.grey[600]),
+            style: TextStyle(color: Color(0xfff8f8f8)),
           ),
         ),
         body: SizedBox(
@@ -95,6 +97,11 @@ class _ChatPageState extends State<ChatPage> {
                         padding: const EdgeInsets.only(top: 10, bottom: 10),
                         physics: const ClampingScrollPhysics(),
                         itemBuilder: (context, index) {
+                          //Dtae Time Conversion
+
+                          Timestamp time = data[index]['sendTime'];
+                          DateTime date = time.toDate();
+
                           if ((data[index]["senderId"] == widget.uid ||
                                   data[index]["receiverId"] == widget.uid) &&
                               (data[index]["senderId"] == widget.rid ||
@@ -107,10 +114,25 @@ class _ChatPageState extends State<ChatPage> {
                                 constraints: BoxConstraints(
                                     maxWidth: scrWidth - 45, minWidth: 110),
                                 child: Card(
-                                  elevation: 1,
+                                  elevation: .7,
+                                  shadowColor: Colors.grey,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  color: Color(0xffdcf8c6),
+                                    borderRadius: (data[index]["senderId"] ==
+                                            widget.rid
+                                        ? BorderRadius.only(
+                                            bottomRight: Radius.circular(20),
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          )
+                                        : BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
+                                          )),
+                                  ),
+                                  color: (data[index]["senderId"] == widget.rid
+                                      ? Color(0xff1e2c35)
+                                      : Color(0xff015c4b)),
                                   margin: EdgeInsets.symmetric(
                                       horizontal: 15, vertical: 5),
                                   child: Stack(
@@ -125,6 +147,7 @@ class _ChatPageState extends State<ChatPage> {
                                         child: Text(
                                           data[index]["message"],
                                           style: TextStyle(
+                                            color: Color(0xffdfe4eb),
                                             fontSize: 16,
                                           ),
                                         ),
@@ -135,19 +158,21 @@ class _ChatPageState extends State<ChatPage> {
                                         child: Row(
                                           children: [
                                             Text(
-                                              "2:30",
+                                              DateFormat('h:mm a')
+                                                  .format(date)
+                                                  .toLowerCase(),
                                               style: TextStyle(
                                                 fontSize: 13,
-                                                color: Colors.grey[600],
+                                                color: Color(0xff77828b),
                                               ),
                                             ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Icon(
-                                              Icons.done_all,
-                                              size: 20,
-                                            ),
+                                            // SizedBox(
+                                            //   width: 5,
+                                            // ),
+                                            // Icon(
+                                            //   Icons.done_all,
+                                            //   size: 20,
+                                            // ),
                                           ],
                                         ),
                                       ),
@@ -220,7 +245,7 @@ class _ChatPageState extends State<ChatPage> {
                           Container(
                             width: scrWidth / 1.25,
                             decoration: BoxDecoration(
-                                color: Colors.grey,
+                                color: Color(0xff202c34),
                                 borderRadius: BorderRadius.circular(20)),
                             margin: EdgeInsets.only(left: 4, bottom: 4),
                             child: Row(
@@ -228,11 +253,22 @@ class _ChatPageState extends State<ChatPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Icon(Icons.face),
+                                Icon(
+                                  Icons.face,
+                                  color: Color(0xff82949f),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Flexible(
                                   child: TextFormField(
+                                    style: TextStyle(color: Colors.white),
+                                    cursorColor: Color(0xff0aa37d),
                                     controller: messageController,
                                     decoration: const InputDecoration(
+                                        hintText: "Message",
+                                        hintStyle:
+                                            TextStyle(color: Color(0xff82949f)),
                                         border: InputBorder.none),
                                   ),
                                 ),
@@ -244,7 +280,7 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Color(0xff01a885),
                                 borderRadius: BorderRadius.circular(40)),
                             child: Row(
                               children: [
@@ -258,7 +294,10 @@ class _ChatPageState extends State<ChatPage> {
                                         messageController.clear();
                                       }
                                     },
-                                    icon: const Icon(Icons.send_sharp)),
+                                    icon: const Icon(
+                                      Icons.send_sharp,
+                                      color: Color(0xfffffffd),
+                                    )),
                               ],
                             ),
                           ),

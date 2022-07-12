@@ -19,12 +19,12 @@ class _HomeScreenState extends State<HomeScreen> {
     double scrWidth = MediaQuery.of(context).size.width;
     double scrHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Color(0xff131a22),
       appBar: AppBar(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Color(0xff1e2c35),
         title: Text(
           "WhatsApp",
-          style: TextStyle(color: Colors.grey[600]),
+          style: TextStyle(color: Color(0xff8896a1)),
         ),
         actions: [
           GestureDetector(
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 await GoogleSignIn().signOut();
                 FirebaseAuth.instance.signOut();
               },
-              child: Icon(Icons.logout, color: Colors.grey[600])),
+              child: Icon(Icons.logout, color: Color(0xff8896a1))),
           SizedBox(
             width: 10,
           )
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           }));
                         },
                         child: Card(
-                          color: Colors.grey[300],
+                          color: Color(0xff131a22),
                           elevation: .5,
                           child: Container(
                             padding: const EdgeInsets.only(left: 10),
@@ -86,7 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(
                                   width: scrWidth / 15,
                                 ),
-                                Text(snapshot.data!.docs[index]['username']),
+                                Text(
+                                  snapshot.data!.docs[index]['username'],
+                                  style: TextStyle(color: Color(0xffe5ecf2)),
+                                ),
                               ],
                             ),
                           ),
