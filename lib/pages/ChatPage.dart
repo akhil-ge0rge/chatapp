@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chatapp/data.dart';
 import 'package:chatapp/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,26 +27,36 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController messageController = TextEditingController();
+  bool keyBoardShowing = true;
   @override
   Widget build(BuildContext context) {
     double scrWidth = MediaQuery.of(context).size.width;
     double scrHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color(0xff08151a),
         appBar: AppBar(
           leadingWidth: 90,
-
           backgroundColor: Color(0xff1e2c35),
           elevation: 0,
           leading: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              SizedBox(
+                width: 5,
+              ),
               GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: Icon(
-                  Icons.arrow_back_ios_new,
+                  Icons.arrow_back,
                   color: Color(0xfff8f8f8),
                 ),
+              ),
+              SizedBox(
+                width: 5,
               ),
               Container(
                 decoration: BoxDecoration(
@@ -58,8 +70,8 @@ class _ChatPageState extends State<ChatPage> {
                   ],
                   borderRadius: BorderRadius.circular(50),
                 ),
-                width: 45,
-                height: 45,
+                width: 40,
+                height: 40,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: Image.network(
@@ -70,10 +82,18 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ],
           ),
-          // centerTitle: true,
-          title: Text(
-            widget.name,
-            style: TextStyle(color: Color(0xfff8f8f8)),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.name,
+                style: TextStyle(color: Color(0xfff8f8f8), fontSize: 15),
+              ),
+              Text(
+                "online",
+                style: TextStyle(color: Color(0xfff8f8f8), fontSize: 11),
+              ),
+            ],
           ),
         ),
         body: SizedBox(
@@ -166,13 +186,6 @@ class _ChatPageState extends State<ChatPage> {
                                                 color: Color(0xff77828b),
                                               ),
                                             ),
-                                            // SizedBox(
-                                            //   width: 5,
-                                            // ),
-                                            // Icon(
-                                            //   Icons.done_all,
-                                            //   size: 20,
-                                            // ),
                                           ],
                                         ),
                                       ),
@@ -181,65 +194,19 @@ class _ChatPageState extends State<ChatPage> {
                                 ),
                               ),
                             );
-                            // Container(
-                            //   padding: const EdgeInsets.only(
-                            //       left: 14, right: 14, top: 10, bottom: 10),
-                            //   child: Align(
-                            //     alignment:
-                            //         (data[index]["senderId"] == widget.rid
-                            //             ? Alignment.topLeft
-                            //             : Alignment.topRight),
-                            //     child:
-                            // Container(
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(20),
-                            //     color:
-                            //         (data[index]["senderId"] == widget.rid
-                            //             ? Colors.grey[200]
-                            //             : Colors.pink[50]),
-                            //   ),
-                            //   padding: const EdgeInsets.all(16),
-                            //   child: Column(
-                            //     crossAxisAlignment:
-                            //         data[index]["senderId"] == widget.rid
-                            //             ? CrossAxisAlignment.start
-                            //             : CrossAxisAlignment.end,
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     children: [
-                            //       Text(
-                            //         data[index]["message"],
-                            //         style: TextStyle(fontSize: 15),
-                            //       ),
-                            //       SizedBox(
-                            //         width: 40,
-                            //         child: Row(
-                            //           mainAxisAlignment: data[index]
-                            //                       ["senderId"] ==
-                            //                   widget.rid
-                            //               ? MainAxisAlignment.start
-                            //               : MainAxisAlignment.end,
-                            //           children: [
-                            //             SizedBox(),
-                            //             Text(
-                            //               "2:30",
-                            //               style: TextStyle(fontSize: 12),
-                            //             )
-                            //           ],
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                            //   ),
-                            // );
                           }
                           return SizedBox();
                         },
                       ),
                     ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: 8.0, left: 5, right: 5),
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 10,
+                        left: 5,
+                        right: 5,
+                      ),
+                      // padding:
+                      //     const EdgeInsets.only(bottom: 8.0, left: 5, right: 5),
                       child: Row(
                         children: [
                           Container(
@@ -254,7 +221,7 @@ class _ChatPageState extends State<ChatPage> {
                                   width: 10,
                                 ),
                                 Icon(
-                                  Icons.face,
+                                  Icons.emoji_emotions_outlined,
                                   color: Color(0xff82949f),
                                 ),
                                 SizedBox(
@@ -262,6 +229,16 @@ class _ChatPageState extends State<ChatPage> {
                                 ),
                                 Flexible(
                                   child: TextFormField(
+                                    onTap: () {
+                                      keyBoardShowing = false;
+                                      setState(() {});
+                                      Timer(
+                                        Duration(milliseconds: 700),
+                                        () {
+                                          keyBoardShowing = true;
+                                        },
+                                      );
+                                    },
                                     style: TextStyle(color: Colors.white),
                                     cursorColor: Color(0xff0aa37d),
                                     controller: messageController,
@@ -302,6 +279,12 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    Offstage(
+                      offstage: keyBoardShowing,
+                      child: SizedBox(
+                        height: 255,
                       ),
                     ),
                   ],
