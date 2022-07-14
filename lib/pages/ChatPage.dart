@@ -27,7 +27,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController messageController = TextEditingController();
-  bool keyBoardShowing = true;
+  bool keyBoardShowing = false;
   @override
   Widget build(BuildContext context) {
     double scrWidth = MediaQuery.of(context).size.width;
@@ -132,24 +132,14 @@ class _ChatPageState extends State<ChatPage> {
                                   : Alignment.topRight),
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                    maxWidth: scrWidth - 45, minWidth: 110),
+                                    minHeight: 50,
+                                    maxWidth: scrWidth - 45,
+                                    minWidth: 115),
                                 child: Card(
                                   elevation: .7,
                                   shadowColor: Colors.grey,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: (data[index]["senderId"] ==
-                                            widget.rid
-                                        ? BorderRadius.only(
-                                            bottomRight: Radius.circular(20),
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
-                                          )
-                                        : BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            topLeft: Radius.circular(20),
-                                            topRight: Radius.circular(20),
-                                          )),
-                                  ),
+                                      borderRadius: BorderRadius.circular(20)),
                                   color: (data[index]["senderId"] == widget.rid
                                       ? Color(0xff1e2c35)
                                       : Color(0xff015c4b)),
@@ -230,12 +220,12 @@ class _ChatPageState extends State<ChatPage> {
                                 Flexible(
                                   child: TextFormField(
                                     onTap: () {
-                                      keyBoardShowing = false;
+                                      keyBoardShowing = true;
                                       setState(() {});
                                       Timer(
                                         Duration(milliseconds: 700),
                                         () {
-                                          keyBoardShowing = true;
+                                          keyBoardShowing = false;
                                         },
                                       );
                                     },
@@ -282,7 +272,7 @@ class _ChatPageState extends State<ChatPage> {
                       ),
                     ),
                     Offstage(
-                      offstage: keyBoardShowing,
+                      offstage: !keyBoardShowing,
                       child: SizedBox(
                         height: 255,
                       ),
