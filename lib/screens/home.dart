@@ -2,6 +2,7 @@ import 'package:chatapp/main.dart';
 import 'package:chatapp/screens/TabBar.dart';
 import 'package:chatapp/screens/call.dart';
 import 'package:chatapp/screens/chat.dart';
+import 'package:chatapp/pages/statusPage.dart';
 import 'package:chatapp/screens/status.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,11 +35,19 @@ class _HomeScreenState extends State<HomeScreen>
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
+                toolbarHeight: 49,
+                pinned: true,
+                floating: true,
+                expandedHeight: 100,
                 elevation: 0,
                 backgroundColor: Color(0xff1e2c35),
-                title: Text(
-                  'WhatsApp',
-                  style: TextStyle(color: Color(0xff8896a1)),
+                titleTextStyle: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 21,
+                ),
+                title: const Text(
+                  'ChatApp',
                 ),
                 actions: [
                   GestureDetector(
@@ -47,12 +56,10 @@ class _HomeScreenState extends State<HomeScreen>
                         FirebaseAuth.instance.signOut();
                       },
                       child: Icon(Icons.logout, color: Color(0xff8896a1))),
-                  SizedBox(
-                    width: 10,
-                  )
+                  // SizedBox(
+                  //   width: 10,
+                  // )
                 ],
-                pinned: true,
-                floating: true,
                 bottom: TabBar(
                   isScrollable: true,
                   indicatorSize: TabBarIndicatorSize.tab,

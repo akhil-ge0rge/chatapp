@@ -31,6 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
               return Text("No Chats ");
             } else {
               return ListView.builder(
+                  padding: EdgeInsets.zero,
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
