@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'dart:async';
@@ -24,7 +27,25 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController messageController = TextEditingController();
+
   bool keyBoardShowing = false;
+
+  bool emojiShowing = false;
+
+  _onEmojiSelected(Emoji emoji) {
+    messageController
+      ..text += emoji.emoji
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: messageController.text.length));
+  }
+
+  _onBackspacePressed() {
+    messageController
+      ..text = messageController.text.characters.skipLast(1).toString()
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: messageController.text.length));
+  }
+
   @override
   Widget build(BuildContext context) {
     double scrWidth = MediaQuery.of(context).size.width;
@@ -94,8 +115,6 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ),
         body: SizedBox(
-          height: scrHeight,
-          width: scrWidth,
           child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection("chat")
@@ -108,6 +127,8 @@ class _ChatPageState extends State<ChatPage> {
                   children: [
                     Expanded(
                       child: ListView.builder(
+                        addAutomaticKeepAlives: true,
+                        cacheExtent: double.infinity,
                         reverse: true,
                         itemCount: data.length,
                         shrinkWrap: true,
@@ -207,9 +228,18 @@ class _ChatPageState extends State<ChatPage> {
                                 const SizedBox(
                                   width: 10,
                                 ),
-                                Icon(
-                                  Icons.emoji_emotions_outlined,
-                                  color: Color(0xff82949f),
+                                GestureDetector(
+                                  onTap: () {
+                                    emojiShowing = !emojiShowing;
+                                    keyBoardShowing = false;
+                                    FocusManager.instance.primaryFocus!
+                                        .unfocus();
+                                    setState(() {});
+                                  },
+                                  child: Icon(
+                                    Icons.emoji_emotions_outlined,
+                                    color: Color(0xff82949f),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 5,
@@ -217,14 +247,10 @@ class _ChatPageState extends State<ChatPage> {
                                 Flexible(
                                   child: TextFormField(
                                     onTap: () {
+                                      emojiShowing = false;
                                       keyBoardShowing = true;
+
                                       setState(() {});
-                                      Timer(
-                                        Duration(milliseconds: 700),
-                                        () {
-                                          keyBoardShowing = false;
-                                        },
-                                      );
                                     },
                                     style: TextStyle(color: Colors.white),
                                     cursorColor: Color(0xff0aa37d),
@@ -271,7 +297,46 @@ class _ChatPageState extends State<ChatPage> {
                     Offstage(
                       offstage: !keyBoardShowing,
                       child: SizedBox(
-                        height: 255,
+                        height: 250,
+                      ),
+                    ),
+                    Offstage(
+                      offstage: !emojiShowing,
+                      child: SizedBox(
+                        height: 250,
+                        child: EmojiPicker(
+                          onEmojiSelected: (category, emoji) =>
+                              _onEmojiSelected(emoji),
+                          onBackspacePressed: _onBackspacePressed,
+                          config: Config(
+                            columns: 7,
+                            emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                            verticalSpacing: 0,
+                            horizontalSpacing: 0,
+                            gridPadding: EdgeInsets.zero,
+                            initCategory: Category.RECENT,
+                            bgColor: const Color(0xff),
+                            indicatorColor: Colors.blue,
+                            iconColor: Colors.grey,
+                            progressIndicatorColor: Colors.grey,
+                            backspaceColor: Colors.blue,
+                            skinToneDialogBgColor: Colors.white,
+                            skinToneIndicatorColor: Colors.grey,
+                            enableSkinTones: true,
+                            showRecentsTab: true,
+                            recentsLimit: 28,
+                            replaceEmojiOnLimitExceed: false,
+                            noRecents: const Text(
+                              'No Recents',
+                              style: TextStyle(
+                                  fontSize: 20, color: Colors.black26),
+                              textAlign: TextAlign.center,
+                            ),
+                            tabIndicatorAnimDuration: kTabScrollDuration,
+                            categoryIcons: const CategoryIcons(),
+                            buttonMode: ButtonMode.MATERIAL,
+                          ),
+                        ),
                       ),
                     ),
                   ],
