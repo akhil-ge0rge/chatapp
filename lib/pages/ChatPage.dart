@@ -1,12 +1,9 @@
+import 'package:intl/intl.dart';
+
 import 'dart:async';
 
-import 'package:chatapp/data.dart';
-import 'package:chatapp/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   String uid;
